@@ -1,0 +1,607 @@
+### 1. Data Loading, Initial Concatenation, and Cleaning
+
+| Step | Description | Justification |
+|:---|:---|:---|
+| Loading | The HuffPost dataset was loaded from a Hugging Face dataset URL using `datasets.load_dataset('json', ...)`. | This initiated the data pipeline. |
+| Concatenation | The 'headline' and 'short_description' fields were concatenated to form a single text input. | To combine all descriptive information into a single feature for the model. |
+| Normalization (SpaCy) | The combined text was subjected to full normalization using the SpaCy nlp pipe (`en_core_web_sm`). This included tokenization, lemmatization, conversion to lowercase, and removal of stop words and non-alphabetic tokens (punctuation, space). | This transformation standardizes the text, reduces vocabulary size by grouping word forms (lemmatization), and removes common words (stop words) and noise, which are typically irrelevant for classification. |
+| Removal of Short Entries | Entries containing fewer than 3 tokens (`MIN_WORDS`) after SpaCy cleaning were filtered out (removing 207 rows). | Ensures that only sufficiently descriptive and meaningful samples remain in the dataset, removing noise and low-quality data. |
+| Deduplication | Exact duplicate texts and ambiguous texts (texts associated with more than one 'category' label) were identified and removed. | Improves data quality by removing noise and potential labeling inconsistencies, preventing the model from receiving conflicting classifications during training. |
+| Category Ambiguity Resolution | Categories with a high similarity score (0.8 or above) were merged (mapped to a single category) based on an analysis using TF-IDF and cosine similarity on the cleaned text. | This step was necessary to resolve classification ambiguity and standardize the labels. |
+
+using this text, how should it be formatting in markup so it looks good and is easy to read?
+
+That's a great data processing summary! A standard markdown table would be too wide and hard to read with that much text.
+For maximum readability in markdown, the best way to format this is with headings and lists. This stacks the information vertically, making it easy to scan.
+Here is the text from your image, formatted in clean, easy-to-read markdown.
+ 
+Loading
+•	Description: The HuffPost dataset was loaded from a Hugging Face dataset URL using datasets.load_dataset('json', ...).
+•	Justification: This initiated the data pipeline.
+ 
+Concatenation
+•	Description: The 'headline' and 'short_description' fields were concatenated to form a single text input.
+•	Justification: To combine all descriptive information into a single feature for the model.
+ 
+Normalization (SpaCy)
+•	Description: The combined text was subjected to full normalization using the SpaCy nlp pipe (en_core_web_sm). This included tokenization, lemmatization, conversion to lowercase, and removal of stop words and non-alphabetic tokens (punctuation, space).
+•	Justification: This transformation standardizes the text, reduces vocabulary size by grouping word forms (lemmatization), and removes common words (stop words) and noise, which are typically irrelevant for classification.
+ 
+Removal of Short Entries
+•	Description: Entries containing fewer than 3 tokens (MIN_WORDS) after SpaCy cleaning were filtered out (removing 207 rows).
+•	Justification: Ensures that only sufficiently descriptive and meaningful samples remain in the dataset, removing noise and low-quality data.
+ 
+Deduplication
+•	Description: Exact duplicate texts and ambiguous texts (texts associated with more than one 'category' label) were identified and removed.
+•	Justification: Improves data quality by removing noise and potential labeling inconsistencies, preventing the model from receiving conflicting classifications during training.
+ 
+Category Ambiguity Resolution
+•	Description: Categories with a high similarity score (0.8 or above) were merged (mapped to a single category) based on an analysis using TF-IDF and cosine similarity on the cleaned text.
+•	Justification: This step was necessary to resolve classification ambiguity and standardize the labels.
+Please format it in markdown formatting so I can cut and paste it into VS code. For example, <b> bold</b> when there should be bold text 
+Here is the text formatted as a raw markdown block. You can copy and paste everything inside the GFM block directly into your VS Code file.
+(Note: Markdown uses **double asterisks** for bolding, not the <b> tag, which is HTML.)
+Code snippet
+### Loading
+
+* **Description:** The HuffPost dataset was loaded from a Hugging Face dataset URL using `datasets.load_dataset('json', ...)`.
+* **Justification:** This initiated the data pipeline.
+
+---
+
+### Concatenation
+
+* **Description:** The 'headline' and 'short\_description' fields were concatenated to form a single text input.
+* **Justification:** To combine all descriptive information into a single feature for the model.
+
+---
+
+### Normalization (SpaCy)
+
+* **Description:** The combined text was subjected to **full normalization** using the SpaCy nlp pipe (`en_core_web_sm`). This included tokenization, lemmatization, conversion to **lowercase**, and removal of **stop words** and **non-alphabetic tokens** (punctuation, space).
+* **Justification:** This transformation standardizes the text, reduces vocabulary size by grouping word forms (lemmatization), and removes common words (stop words) and noise, which are typically irrelevant for classification.
+
+---
+
+### Removal of Short Entries
+
+* **Description:** Entries containing fewer than **3 tokens** (**MIN\_WORDS**) after SpaCy cleaning were filtered out (removing 207 rows).
+* **Justification:** Ensures that only sufficiently descriptive and meaningful samples remain in the dataset, removing noise and low-quality data.
+
+---
+
+### Deduplication
+
+* **Description:** Exact duplicate texts and **ambiguous texts** (texts associated with more than one 'category' label) were identified and removed.
+* **Justification:** Improves data quality by removing noise and potential labeling inconsistencies, preventing the model from receiving conflicting classifications during training.
+
+---
+
+### Category Ambiguity Resolution
+
+* **Description:** Categories with a high similarity score (**0.8 or above**) were **merged** (mapped to a single category) based on an analysis using TF-IDF and cosine similarity on the cleaned text.
+* **Justification:** This step was necessary to resolve classification ambiguity and standardize the labels.
+Please format this text into an easy to read grid as a raw markdown block: Key Validation and Test Metrics 
+Model 
+Validation Accuracy @ Min Loss 
+Test Accuracy 
+Test Loss 
+Baseline Model (Reference) 
+0.611398 
+0.613106 
+1.406944 
+Custom v2: BiLSTM Small Head 
+0.572433 
+0.577002 
+1.610023 
+Custom v3: BiLSTM + SpatialDropout 
+0.567562 
+0.569269 
+1.622410 
+Custom 2: BiLSTM + AttentionPooling 
+0.542255 
+0.544564 
+1.722612 
+Here is that data formatted as a raw markdown table block, with the title as a heading.
+Code snippet
+### Key Validation and Test Metrics
+
+| Model | Validation Accuracy @ Min Loss | Test Accuracy | Test Loss |
+|:---|:---|:---|:---|
+| Baseline Model (Reference) | 0.611398 | 0.613106 | 1.406944 |
+| Custom v2: BiLSTM Small Head | 0.572433 | 0.577002 | 1.610023 |
+| Custom v3: BiLSTM + SpatialDropout | 0.567562 | 0.569269 | 1.622410 |
+| Custom 2: BiLSTM + AttentionPooling | 0.542255 | 0.544564 | 1.722612 |
+please put this in a markdown table formatModel Category 
+Validation Acc @ Min Loss 
+Test Accuracy 
+Test Macro-F1 
+Training Time (sec) 
+Peak Memory (MB) 
+Baseline Model 
+0.6114 
+0.6131 
+0.5485 
+22.09 
+3412.36 
+Best Custom Model (Custom v2 BiLSTM) 
+0.5724 
+0.5770 
+0.5184 
+537.59 
+3725.11 
+Best Pretrained Model (BERT, Partial Fine-Tuning) 
+0.6592 
+0.6569 
+0.6083 
+1831.39 
+24165.62 
+Glad to hear the export worked!
+Here is your performance data formatted as a raw markdown table block, ready to copy and paste.
+Code snippet
+| Model Category | Validation Acc @ Min Loss | Test Accuracy | Test Macro-F1 | Training Time (sec) | Peak Memory (MB) |
+|:---|:---|:---|:---|:---|:---|
+| Baseline Model | 0.6114 | 0.6131 | 0.5485 | 22.09 | 3412.36 |
+| Best Custom Model (Custom v2 BiLSTM) | 0.5724 | 0.5770 | 0.5184 | 537.59 | 3725.11 |
+| Best Pretrained Model (BERT, Partial Fine-Tuning) | 0.6592 | 0.6569 | 0.6083 | 1831.39 | 24165.62 |
+conversation this to raw markdown table block: Model Category 
+Validation Acc @ Min Loss 
+Test Accuracy 
+Test Macro-F1 
+Training Time (sec) 
+Peak Memory (MB) 
+Baseline Model 
+0.6114 
+0.6131 
+0.5485 
+22.09 
+3412.36 
+Best Custom Model (Custom v2 BiLSTM) 
+0.5724 
+0.5770 
+0.5184 
+537.59 
+3725.11 
+Best Pretrained Model (BERT, Partial Fine-Tuning) 
+0.6592 
+0.6569 
+0.6083 
+1831.39 
+24165.62 
+Here is the data converted into a raw markdown table block for you to copy and paste.
+Markdown
+| Model Category | Validation Acc @ Min Loss | Test Accuracy | Test Macro-F1 | Training Time (sec) | Peak Memory (MB) |
+|:---|:---|:---|:---|:---|:---|
+| Baseline Model | 0.6114 | 0.6131 | 0.5485 | 22.09 | 3412.36 |
+| Best Custom Model (Custom v2 BiLSTM) | 0.5724 | 0.5770 | 0.5184 | 537.59 | 3725.11 |
+| Best Pretrained Model (BERT, Partial Fine-Tuning) | 0.6592 | 0.6569 | 0.6083 | 1831.39 | 24165.62 |
+is this the same? Quantitative Comparison of Models 
+The table below presents the key performance metrics and efficiency indicators for the representative models from each category: 
+Model Category 
+Validation Acc @ Min Loss 
+Test Accuracy 
+Test Macro-F1 
+Training Time (sec) 
+Peak Memory (MB) 
+Baseline Model 
+0.6114 
+0.6131 
+0.5485 
+22.09 
+3412.36 
+Best Custom Model (Custom v2 BiLSTM) 
+0.5724 
+0.5770 
+0.5184 
+537.59 
+3725.11 
+Best Pretrained Model (BERT, Partial Fine-Tuning) 
+0.6592 
+0.6569 
+0.6083 
+1831.39 
+24165.62 
+( 
+Yes, the data values are exactly the same as the previous table.
+However, the text you just provided includes a Title and an Introductory Sentence.
+Here is the raw markdown block updated to include that new context so you can paste the whole section at once:
+Markdown
+### Quantitative Comparison of Models
+
+The table below presents the key performance metrics and efficiency indicators for the representative models from each category:
+
+| Model Category | Validation Acc @ Min Loss | Test Accuracy | Test Macro-F1 | Training Time (sec) | Peak Memory (MB) |
+|:---|:---|:---|:---|:---|:---|
+| Baseline Model | 0.6114 | 0.6131 | 0.5485 | 22.09 | 3412.36 |
+| Best Custom Model (Custom v2 BiLSTM) | 0.5724 | 0.5770 | 0.5184 | 537.59 | 3725.11 |
+| Best Pretrained Model (BERT, Partial Fine-Tuning) | 0.6592 | 0.6569 | 0.6083 | 1831.39 | 24165.62 |
+Please create a raw markdown for the graph: Error Patterns: Challenging Examples and Classes 
+1. The Challenge of Data Scarcity (Class Imbalance) 
+The primary reason for poor performance was the significant class imbalance in the dataset. Despite using class weights to help balance the scale, classes with very few records were difficult for any model to generalize. Performance on these categories resulted in the lowest F1 scores. 
+For example, categories like EDUCATION (F1 = 0.3324) and COLLEGE (F1 = 0.3508) have extremely low article counts, making them hard to distinguish consistently. In comparison, majority classes like 'POLITICS' have 30 times more data. 
+Record Count by Category (Hu!Post Dataset) 
+The table below highlights this imbalance, showing the large disparity between the top and bottom categories: 
+Category 
+Record Count 
+Category 
+Record Count 
+POLITICS 
+32,447 
+CRIME 
+3,393 
+FIFTY 
+29,101 
+WOMEN 
+3,363 
+ENTERTAINMENT 
+17,125 
+MEDIA 
+2,807 
+PARENTING 
+12,530 
+WORLDPOST 
+2,536 
+TRAVEL 
+9,842 
+RELIGION 
+2,523 
+STYLE & BEAUTY 
+9,491 
+STYLE 
+2,216 
+FOOD & DRINK 
+8,305 
+SCIENCE 
+2,169 
+QUEER VOICES 
+6,285 
+TECH 
+2,029 
+BUSINESS 
+5,894 
+MONEY 
+1,706 
+THE WORLDPOST 
+5,839 
+COLLEGE 
+1,136 
+COMEDY 
+5,001 
+EDUCATION 
+991 
+SPORTS 
+4,857 
+BLACK VOICES 
+4,514 
+HOME & LIVING 
+4,159 
+GOOD NEWS 
+4,047 
+ENVIRONMENT 
+3,916 
+ARTS 
+3,850 
+WEDDINGS 
+3,651 
+DIVORCE 
+3,423 
+2. Semantic Confusion and Overlap 
+Our models frequently mixed up articles from categories whose topics or names were very close, indicating significant semantic overlap. 
+• Niche Overlap: The model showed persistent confusion between categories like EDUCATION and COLLEGE, or WORLDPOST and THE WORLDPOST, because the subject matter and key vocabulary are nearly identical. 
+• Low F1 Scores in Related Groups: This confusion is evidenced by low Macro-F1 scores in related, low-count categories, such as STYLE (F1 = 0.3994), which is likely confused with the larger STYLE & BEAUTY category. 
+This means that even BERT's ability to understand context was insufficient to draw a clear line between classes that were both rare and highly similar in content. 
+Here is the text formatted as a clean, raw markdown block. I have formatted the dataset list as a side-by-side table to save space and make the comparison between high-data and low-data classes easier to read.
+Markdown
+### Error Patterns: Challenging Examples and Classes
+
+#### 1. The Challenge of Data Scarcity (Class Imbalance)
+The primary reason for poor performance was the significant class imbalance in the dataset. Despite using class weights to help balance the scale, classes with very few records were difficult for any model to generalize. Performance on these categories resulted in the lowest F1 scores.
+
+For example, categories like **EDUCATION (F1 = 0.3324)** and **COLLEGE (F1 = 0.3508)** have extremely low article counts, making them hard to distinguish consistently. In comparison, majority classes like **POLITICS** have 30 times more data.
+
+**Record Count by Category (HuffPost Dataset)**
+The table below highlights this imbalance, showing the large disparity between the top and bottom categories:
+
+| Category (High Count) | Count | Category (Low Count) | Count |
+|:---|:---|:---|:---|
+| POLITICS | 32,447 | CRIME | 3,393 |
+| FIFTY | 29,101 | WOMEN | 3,363 |
+| ENTERTAINMENT | 17,125 | MEDIA | 2,807 |
+| PARENTING | 12,530 | WORLDPOST | 2,536 |
+| TRAVEL | 9,842 | RELIGION | 2,523 |
+| STYLE & BEAUTY | 9,491 | STYLE | 2,216 |
+| FOOD & DRINK | 8,305 | SCIENCE | 2,169 |
+| QUEER VOICES | 6,285 | TECH | 2,029 |
+| BUSINESS | 5,894 | MONEY | 1,706 |
+| THE WORLDPOST | 5,839 | COLLEGE | 1,136 |
+| COMEDY | 5,001 | EDUCATION | 991 |
+| SPORTS | 4,857 | | |
+| BLACK VOICES | 4,514 | | |
+| HOME & LIVING | 4,159 | | |
+| GOOD NEWS | 4,047 | | |
+| ENVIRONMENT | 3,916 | | |
+| ARTS | 3,850 | | |
+| WEDDINGS | 3,651 | | |
+| DIVORCE | 3,423 | | |
+
+#### 2. Semantic Confusion and Overlap
+Our models frequently mixed up articles from categories whose topics or names were very close, indicating significant semantic overlap.
+
+* **Niche Overlap:** The model showed persistent confusion between categories like **EDUCATION** and **COLLEGE**, or **WORLDPOST** and **THE WORLDPOST**, because the subject matter and key vocabulary are nearly identical.
+* **Low F1 Scores in Related Groups:** This confusion is evidenced by low Macro-F1 scores in related, low-count categories, such as **STYLE (F1 = 0.3994)**, which is likely confused with the larger **STYLE & BEAUTY** category.
+
+This means that even BERT's ability to understand context was insufficient to draw a clear line between classes that were both rare and highly similar in content.
+please improve the way the table looks 
+To make the table look better, I have:
+1.	Balanced the columns: The list is now split exactly in half (15 items per side) so there is no empty white space at the bottom.
+2.	Right-aligned the numbers: This makes the counts much easier to compare visually.
+3.	Added bolding: The categories are now distinct from the counts.
+Here is the updated raw markdown block:
+Markdown
+### Error Patterns: Challenging Examples and Classes
+
+#### 1. The Challenge of Data Scarcity (Class Imbalance)
+The primary reason for poor performance was the significant class imbalance in the dataset. Despite using class weights to help balance the scale, classes with very few records were difficult for any model to generalize. Performance on these categories resulted in the lowest F1 scores.
+
+For example, categories like **EDUCATION (F1 = 0.3324)** and **COLLEGE (F1 = 0.3508)** have extremely low article counts, making them hard to distinguish consistently. In comparison, majority classes like **POLITICS** have 30 times more data.
+
+**Record Count by Category (HuffPost Dataset)**
+The table below highlights this imbalance, showing the disparity between the most frequent categories (Left) and the less frequent ones (Right):
+
+| Category | Count | Category | Count |
+|:---|---:|:---|---:|
+| **POLITICS** | 32,447 | **ENVIRONMENT** | 3,916 |
+| **FIFTY** | 29,101 | **ARTS** | 3,850 |
+| **ENTERTAINMENT** | 17,125 | **WEDDINGS** | 3,651 |
+| **PARENTING** | 12,530 | **DIVORCE** | 3,423 |
+| **TRAVEL** | 9,842 | **CRIME** | 3,393 |
+| **STYLE & BEAUTY** | 9,491 | **WOMEN** | 3,363 |
+| **FOOD & DRINK** | 8,305 | **MEDIA** | 2,807 |
+| **QUEER VOICES** | 6,285 | **WORLDPOST** | 2,536 |
+| **BUSINESS** | 5,894 | **RELIGION** | 2,523 |
+| **THE WORLDPOST** | 5,839 | **STYLE** | 2,216 |
+| **COMEDY** | 5,001 | **SCIENCE** | 2,169 |
+| **SPORTS** | 4,857 | **TECH** | 2,029 |
+| **BLACK VOICES** | 4,514 | **MONEY** | 1,706 |
+| **HOME & LIVING** | 4,159 | **COLLEGE** | 1,136 |
+| **GOOD NEWS** | 4,047 | **EDUCATION** | 991 |
+
+#### 2. Semantic Confusion and Overlap
+Our models frequently mixed up articles from categories whose topics or names were very close, indicating significant semantic overlap.
+
+* **Niche Overlap:** The model showed persistent confusion between categories like **EDUCATION** and **COLLEGE**, or **WORLDPOST** and **THE WORLDPOST**, because the subject matter and key vocabulary are nearly identical.
+* **Low F1 Scores in Related Groups:** This confusion is evidenced by low Macro-F1 scores in related, low-count categories, such as **STYLE (F1 = 0.3994)**, which is likely confused with the larger **STYLE & BEAUTY** category.
+
+This means that even BERT's ability to understand context was insufficient to draw a clear line between classes that were both rare and highly similar in content.
+format in markdown: The models consistently struggled with categories exhibiting low F1 scores (at or below 0.40x), indicating that these were the most challenging classes: 
+Category 
+F1 Score (Approx.) 
+Total Record Count 
+WOMEN 
+0.2557 
+3,363 
+GOOD NEWS 
+0.3208 
+4,047 
+EDUCATION 
+0.3324 
+991 
+WORLDPOST 
+0.3526 
+2,536 
+COLLEGE 
+0.3508 
+1,136 
+BUSINESS 
+0.3791 
+5,894 
+STYLE 
+0.3994 
+2,216 
+SCIENCE 
+0.4000 
+2,169 
+TECH 
+0.4014 
+2,029 
+This table visually summarizes the two key error patterns: 
+1. Low Data Representation (Class Imbalance): The most challenging classes, such as EDUCATION (991 records) and COLLEGE (1,136 records), had the lowest number of records in the dataset. 
+2. Semantic Overlap/Ambiguity: Certain challenging categories shared similar names, which likely contributed to confusion even if initial TF-IDF similarity analysis did not flag them as high overlap. Examples include STYLE and STYLE & BEAUTY, WORLDPOST and THE WORLDPOST, and EDUCATION and COLLEGE. 
+Here is the raw markdown block. I have formatted the data into a clean table with right-aligned numbers for easier reading, and applied bolding to key terms in the analysis section.
+Markdown
+### Challenging Classes (Low F1 Scores)
+
+The models consistently struggled with categories exhibiting low F1 scores (**at or below 0.40x**), indicating that these were the most challenging classes:
+
+| Category | F1 Score (Approx.) | Total Record Count |
+|:---|---:|---:|
+| **WOMEN** | 0.2557 | 3,363 |
+| **GOOD NEWS** | 0.3208 | 4,047 |
+| **EDUCATION** | 0.3324 | 991 |
+| **WORLDPOST** | 0.3526 | 2,536 |
+| **COLLEGE** | 0.3508 | 1,136 |
+| **BUSINESS** | 0.3791 | 5,894 |
+| **STYLE** | 0.3994 | 2,216 |
+| **SCIENCE** | 0.4000 | 2,169 |
+| **TECH** | 0.4014 | 2,029 |
+
+This table visually summarizes the two key error patterns:
+
+1. **Low Data Representation (Class Imbalance):** The most challenging classes, such as **EDUCATION** (991 records) and **COLLEGE** (1,136 records), had the lowest number of records in the dataset.
+2. **Semantic Overlap/Ambiguity:** Certain challenging categories shared similar names, which likely contributed to confusion even if initial TF-IDF similarity analysis did not flag them as high overlap. Examples include **STYLE** and **STYLE & BEAUTY**, **WORLDPOST** and **THE WORLDPOST**, and **EDUCATION** and **COLLEGE**.
+Model Category 
+Key Metric (Test Macro-F1) 
+Validation Acc @ Min Loss 
+Training Time (sec) 
+Peak Memory (MB) 
+Best Pretrained BERT 
+0.6083 (Run 21) 
+0.6592 (Run 21) 
+1831.39 
+24,165.62 
+Best Baseline Model 
+0.5485 
+0.6114 
+22.09 
+3,412.36 
+Best Custom Model 
+0.5184 
+0.5724 
+537.59 
+3,725.11 
+Here is the data formatted as a raw markdown table block. I have aligned the numbers to the right to make them easier to compare.
+Markdown
+| Model Category | Key Metric (Test Macro-F1) | Validation Acc @ Min Loss | Training Time (sec) | Peak Memory (MB) |
+|:---|---:|---:|---:|---:|
+| **Best Pretrained BERT** | 0.6083 (Run 21) | 0.6592 (Run 21) | 1,831.39 | 24,165.62 |
+| **Best Baseline Model** | 0.5485 | 0.6114 | 22.09 | 3,412.36 |
+| **Best Custom Model** | 0.5184 | 0.5724 | 537.59 | 3,725.11 |
+Area of Improvement 
+Specific Steps & Focus 
+Rationale (from Source) 
+1. Optimization Parameters 
+Learning Rate Scanning: Continue searching around the current optimum (e.g., 5.0×10−6 
+and 2.0×10−6 
+). 
+The most effective learning rates found so far are very low, and finding the optimal low rate is crucial for generalization. 
+2. Architectural Nuance 
+Explore Other Language Models: Investigate other Language Models to find a better balance between accuracy and training efficiency. 
+BERT's memory requirement is high (5-6 times the custom models), while DistilBERT is lower (3 times) but yielded lower accuracy. 
+3. Hyperparameter Exploration 
+Advanced Hyperparameter Tuning: Focus on other hyperparameters to gain increased accuracy in classification. 
+The current plan emphasizes hyperparameter scanning to enhance model fine-tuning. 
+4. Data Scaling 
+Maximize Data Utilization: Train with the full dataset (1.0 fraction) after finding the optimal low learning rate, as the goal is to increase macro F1 and accuracy. 
+The source noted diminishing returns on performance above the 50% dataset fraction during the learning rate scan, but full data training remains a target for refinement. 
+Here is the raw markdown table block. I have added bolding to the key action items to make the text easier to scan.
+Markdown
+| Area of Improvement | Specific Steps & Focus | Rationale (from Source) |
+|:---|:---|:---|
+| **1. Optimization Parameters** | **Learning Rate Scanning:** Continue searching around the current optimum (e.g., 5.0×10⁻⁶ and 2.0×10⁻⁶). | The most effective learning rates found so far are very low, and finding the optimal low rate is crucial for generalization. |
+| **2. Architectural Nuance** | **Explore Other Language Models:** Investigate other Language Models to find a better balance between accuracy and training efficiency. | BERT's memory requirement is high (5-6 times the custom models), while DistilBERT is lower (3 times) but yielded lower accuracy. |
+| **3. Hyperparameter Exploration** | **Advanced Hyperparameter Tuning:** Focus on other hyperparameters to gain increased accuracy in classification. | The current plan emphasizes hyperparameter scanning to enhance model fine-tuning. |
+| **4. Data Scaling** | **Maximize Data Utilization:** Train with the full dataset (1.0 fraction) after finding the optimal low learning rate, as the goal is to increase macro F1 and accuracy. | The source noted diminishing returns on performance above the 50% dataset fraction during the learning rate scan, but full data training remains a target for refinement. |
+write this out: 5.0*10-6 
+Here is the standard scientific notation formatted for Markdown/LaTeX:
+LaTeX (Best for Notebooks):
+Code snippet
+$5.0 \times 10^{-6}$
+Unicode (Best for plain text): 5.0 × 10⁻⁶
+markdown: Configuration Detail 
+Setting 
+Justification (Why We Chose It) 
+Strategy 
+Partial Freeze (unfreeze last two layers) 
+Cost Efficiency: Partial freezing gave results comparable to full training but avoided the substantially higher CPU and memory costs associated with training the entire BERT backbone. 
+Learning Rate (LR) 
+5.0×10−6 
+Performance Peak: This specific low LR, identified through focused tuning (5e-06 and 2e-06), achieved the highest validation accuracy of 0.6592 (Run 21). Lower LRs are crucial for adapting pre-trained weights without destabilizing them. 
+Batch Size 
+16 
+This size was among the top-performing configurations and was selected over larger batches (like 32) to support better generalization when scaling up the data. 
+Data Subset 
+0.5 (50%) 
+Training Time Efficiency: We found that increasing the data size beyond 50% (to 0.75 or 1.0) did not significantly improve accuracy or F1-score, but it did lead to substantially higher training time. Training on the 0.5 subset was the most efficient way to maximize accuracy. 
+Here is the raw markdown table block. I have used the scientific notation formatting we discussed and bolded the key settings for clarity.
+Markdown
+### Configuration Detail
+
+| Setting | Justification (Why We Chose It) |
+|:---|:---|
+| **Strategy:** Partial Freeze (unfreeze last two layers) | **Cost Efficiency:** Partial freezing gave results comparable to full training but avoided the substantially higher CPU and memory costs associated with training the entire BERT backbone. |
+| **Learning Rate (LR):** $5.0 \times 10^{-6}$ | **Performance Peak:** This specific low LR, identified through focused tuning (5e-06 and 2e-06), achieved the highest validation accuracy of 0.6592 (Run 21). Lower LRs are crucial for adapting pre-trained weights without destabilizing them. |
+| **Batch Size:** 16 | This size was among the top-performing configurations and was selected over larger batches (like 32) to support better generalization when scaling up the data. |
+| **Data Subset:** 0.5 (50%) | **Training Time Efficiency:** We found that increasing the data size beyond 50% (to 0.75 or 1.0) did not significantly improve accuracy or F1-score, but it did lead to substantially higher training time. Training on the 0.5 subset was the most efficient way to maximize accuracy. |
+Model Category 
+Validation Acc @ Min Loss 
+Test Accuracy 
+Test Macro-F1 
+Training Time (sec) 
+Peak Memory (MB) 
+Best Pretrained BERT (Run 21) 
+0.6592 
+0.6569 
+0.6083 
+1,831.39 
+24,165.62 
+Baseline Model 
+0.6114 
+0.6131 
+0.5485 
+22.09 
+3,412.36 
+Best Custom Model (BiLSTM v2) 
+0.5724 
+0.5770 
+0.5184 
+537.59 
+3,725.11 
+Here is the raw markdown table block for your comparison data. I have right-aligned the numerical columns to make the values easier to compare.
+Markdown
+| Model Category | Validation Acc @ Min Loss | Test Accuracy | Test Macro-F1 | Training Time (sec) | Peak Memory (MB) |
+|:---|---:|---:|---:|---:|---:|
+| **Best Pretrained BERT (Run 21)** | 0.6592 | 0.6569 | 0.6083 | 1,831.39 | 24,165.62 |
+| **Baseline Model** | 0.6114 | 0.6131 | 0.5485 | 22.09 | 3,412.36 |
+| **Best Custom Model (BiLSTM v2)** | 0.5724 | 0.5770 | 0.5184 | 537.59 | 3,725.11 |
+Model Category 
+Training Time 
+Peak Memory 
+General Behavior 
+Baseline Model 
+~22 seconds 
+~3.4 GB 
+Extremely fast and cheap; ideal for quick checks. 
+Custom Models (e.g., BiLSTM) 
+~3 to 18 minutes (177–1,073 sec) 
+~3.7–3.8 GB 
+Slower than Baseline but still low memory footprint. 
+Pretrained BERT 
+~30 to 33 minutes (1,831–2,009 sec) 
+~23–24 GB 
+Highest cost (5-6 times the memory of custom models) but achieved peak accuracy quickly in terms of epochs (e.g., Run 21 at Epoch 7). 
+Here is the raw markdown table block. I have added bolding to the model names for clarity.
+Markdown
+| Model Category | Training Time | Peak Memory | General Behavior |
+|:---|:---|:---|:---|
+| **Baseline Model** | ~22 seconds | ~3.4 GB | Extremely fast and cheap; ideal for quick checks. |
+| **Custom Models (e.g., BiLSTM)** | ~3 to 18 minutes (177–1,073 sec) | ~3.7–3.8 GB | Slower than Baseline but still low memory footprint. |
+| **Pretrained BERT** | ~30 to 33 minutes (1,831–2,009 sec) | ~23–24 GB | Highest cost (5-6 times the memory of custom models) but achieved peak accuracy quickly in terms of epochs (e.g., Run 21 at Epoch 7). |
+Computational Comparison of Model Categories 
+Model Category 
+Training Time (Example Run) 
+Peak Memory (MB) 
+Memory Ratio (vs. Custom) 
+Quickest Convergence (Epoch) 
+Baseline Model 
+22.09 sec 
+3,412.36 MB 
+Lowest 
+Epoch 3 
+Custom Models (Range) 
+177.88 – 1,073.48 sec 
+3,725 – 3,855 MB 
+Baseline 
+Epoch 1 to Epoch 16 
+DistilBERT (Intermediate) 
+~234 – 328 sec 
+~6,344 – 10,564 MB 
+~3 times higher 
+Fast (e.g., Epoch 6) 
+Pretrained BERT (Best Run) 
+1,831.39 sec 
+24,165.62 MB 
+5–6 times higher 
+Epoch 7 
+Here is the raw markdown table block.
+Markdown
+### Computational Comparison of Model Categories
+
+| Model Category | Training Time (Example Run) | Peak Memory (MB) | Memory Ratio (vs. Custom) | Quickest Convergence (Epoch) |
+|:---|---:|---:|:---|:---|
+| **Baseline Model** | 22.09 sec | 3,412.36 | Lowest | Epoch 3 |
+| **Custom Models (Range)** | 177.88 – 1,073.48 sec | 3,725 – 3,855 | Baseline | Epoch 1 to Epoch 16 |
+| **DistilBERT (Intermediate)** | ~234 – 328 sec | ~6,344 – 10,564 | ~3 times higher | Fast (e.g., Epoch 6) |
+| **Pretrained BERT (Best Run)** | 1,831.39 sec | 24,165.62 | 5–6 times higher | Epoch 7 |
+
+
+
